@@ -6,7 +6,7 @@ const DATA_FILE = path.join(process.cwd(), 'data', 'student-data.json'); // Path
 
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     try {
       const { studentPhone, parentPhone, course, class: selectedClass } = await req.json();
 

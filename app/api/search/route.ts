@@ -6,10 +6,9 @@ const DATA_FILE = path.join(process.cwd(), 'data', 'student-data.json'); // Path
 
 import { NextRequest, NextResponse } from 'next/server';
 
-export default async function handler(req: NextRequest, res: NextResponse) {
-  if (req.method === 'POST') {
+export async function POST(req: NextRequest, res: NextResponse) {
     try {
-      const { studentPhone, parentPhone, selectedCourse, selectedClass } = await req.json();
+      const { studentPhone, parentPhone, course, class: selectedClass } = await req.json();
 
       // Read and parse the student data from the JSON file
       const fileData = await fs.readFile(DATA_FILE, 'utf8');
@@ -18,7 +17,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       // Search logic (updated to filter by course and class)
       const matchingStudent = processedData.find((student: any) => {
         const matchPhone = student['Student Phone'] === studentPhone && student['Parent Phone'] === parentPhone;
-        const matchCourse = selectedCourse ? student['Course'] === selectedCourse : true;
+        const matchCourse = course ? student['Course'] === course : true;
         const matchClass = selectedClass ? student['Enrolled Class'] === selectedClass : true;
         return matchPhone && matchCourse && matchClass;
       });
@@ -35,7 +34,4 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       console.error('Error searching for student:', error);
       return NextResponse.json({ error: 'Failed to search for student', details: error.message }, { status: 500 });
     }
-  } else {
-    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
-  }
 }
